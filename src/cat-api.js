@@ -1,10 +1,11 @@
 import axios from 'axios';
 import SlimSelect from 'slim-select';
+import Notiflix from 'notiflix';
 
 const catsSelect = document.querySelector('.breed-select');
 const catInfo = document.querySelector('.cat-info');
 const loader = document.querySelector('.loader');
-const errorBlock = document.querySelector('.error');
+// const errorBlock = document.querySelector('.error');
 
 function fetchBreads() {
   axios
@@ -35,7 +36,8 @@ function fetchBreads() {
 }
 
 function fetchCatByBreed(breedId) {
-  loader.classList.toggle('display-none');
+  catInfo.style.visibility = 'hidden';
+  loader.style.visibility = 'visible';
 
   axios
     .get(`https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`)
@@ -52,15 +54,18 @@ function fetchCatByBreed(breedId) {
           },
         },
       }) => {
-        loader.classList.toggle('display-none');
+        catInfo.style.visibility = 'visible';
+        loader.style.visibility = 'hidden';
 
         catInfo.innerHTML = `<img src="${url}" alt="${name}" width="300"><div><h1>${name}</h1><p>${description}</p><p><b>Temperament: </b>${temperament}</p></div>`;
       }
     )
     .catch(error => {
       console.log(error);
-      loader.classList.toggle('display-none');
-      errorBlock.classList.toggle('display-none');
+      Notiflix.Notify.failure(
+        'Oops! Something went wrong! Try reloading the page!'
+      );
+      // errorBlock.classList.toggle('display-none');
     });
 }
 
